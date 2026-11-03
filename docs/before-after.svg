@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" width="960" height="470" role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title id="t">Before and after Moor</title>
+  <desc id="d">Without Moor the cursor falls through the monitor to the laptop and the Dock stays on the laptop. With Moor the Dock stays on the monitor and the cursor stops before the laptop's bottom edge.</desc>
+  <defs>
+    <g id="dock">
+      <rect width="104" height="18" rx="6" fill="#F2EDE3"/>
+      <circle cx="17" cy="9" r="5" fill="#1E6FD9"/>
+      <circle cx="35" cy="9" r="5" fill="#F28C38"/>
+      <circle cx="52" cy="9" r="5" fill="#3FA66B"/>
+      <circle cx="69" cy="9" r="5" fill="#D9534F"/>
+      <circle cx="87" cy="9" r="5" fill="#8A63C9"/>
+    </g>
+    <path id="cursor" d="M0 0 L0 20 L5.5 15.2 L9.2 23.5 L12.8 21.9 L9.2 13.8 L16.4 13.2 Z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/>
+    <g id="screens">
+      <rect x="70" y="86" width="340" height="170" rx="10" fill="#27506F" stroke="#7E9CB3" stroke-width="3"/>
+      <rect x="150" y="256" width="180" height="116" rx="8" fill="#1B3F5C" stroke="#7E9CB3" stroke-width="3"/>
+      <text x="240" y="176" text-anchor="middle" font-size="15" fill="#C9D8E3">Monitor</text>
+      <text x="240" y="312" text-anchor="middle" font-size="15" fill="#C9D8E3">Laptop</text>
+    </g>
+  </defs>
+
+  <rect width="470" height="470" rx="18" fill="#0F2F4A"/>
+  <rect x="490" width="470" height="470" rx="18" fill="#0F2F4A"/>
+
+  <text x="235" y="50" text-anchor="middle" font-size="24" font-weight="600" fill="#F2EDE3">Without Moor</text>
+  <use href="#screens" x="-5"/>
+  <use href="#dock" x="183" y="346"/>
+  <use href="#cursor">
+    <animateTransform attributeName="transform" type="translate" dur="5s" repeatCount="indefinite" calcMode="linear"
+      keyTimes="0;0.15;0.7;1" values="290 130;290 130;290 322;290 322"/>
+  </use>
+  <text x="235" y="416" text-anchor="middle" font-size="16" fill="#F2EDE3">The cursor falls through to the laptop,</text>
+  <text x="235" y="440" text-anchor="middle" font-size="16" fill="#F2EDE3">and the Dock stays stuck there.</text>
+
+  <g transform="translate(490 0)">
+    <text x="235" y="50" text-anchor="middle" font-size="24" font-weight="600" fill="#F2EDE3">With Moor</text>
+    <use href="#screens" x="-5"/>
+    <use href="#dock" x="183" y="230"/>
+    <rect x="145" y="366" width="180" height="5" rx="2.5" fill="#F28C38"/>
+    <use href="#cursor">
+      <animateTransform attributeName="transform" type="translate" dur="5s" repeatCount="indefinite" calcMode="linear"
+        keyTimes="0;0.15;0.6;1" values="290 280;290 280;290 343;290 343"/>
+    </use>
+    <text x="235" y="416" text-anchor="middle" font-size="16" fill="#F2EDE3">The Dock stays on the display you chose,</text>
+    <text x="235" y="440" text-anchor="middle" font-size="16" fill="#F2EDE3">and the cursor stops before the laptop's edge.</text>
+  </g>
+</svg>
