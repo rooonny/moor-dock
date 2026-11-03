@@ -21,32 +21,23 @@ macOS moves the Dock to a display when the cursor presses against that display's
 
 ## Install
 
-Moor is built from source for now, which takes about a minute. You don't need the full Xcode app.
+You'll need macOS 13 or later.
 
-**You'll need** macOS 13 or later and Xcode Command Line Tools. If you don't have the tools yet, install them first:
+**1. Download Moor**
 
-```sh
-xcode-select --install
-```
+[Download Moor.zip](https://github.com/rooonny/moor-dock/releases/latest/download/Moor.zip), unzip it, and drag **Moor** to your Applications folder.
 
-**1. Download and build Moor**
+**2. Open it for the first time**
 
-```sh
-git clone https://github.com/rooonny/moor-dock.git
-cd moor-dock
-./scripts/build-app.sh
-```
+Moor isn't notarized by Apple, so macOS blocks it the first time you open it:
 
-**2. Move it to Applications and open it**
-
-```sh
-cp -R build/Moor.app /Applications/
-open /Applications/Moor.app
-```
+1. Open Moor and dismiss the warning.
+2. Go to System Settings > Privacy & Security and scroll down to the Security section.
+3. Click **Open Anyway** next to the message about Moor, then confirm.
 
 **3. Allow Accessibility access**
 
-macOS asks for this on first launch. Turn on **Moor** in System Settings > Privacy & Security > Accessibility. Moor needs this to watch cursor movement and to post the events that move the Dock.
+Turn on **Moor** in System Settings > Privacy & Security > Accessibility. Moor needs this to watch cursor movement and to post the events that move the Dock.
 
 **4. Choose your display**
 
@@ -60,15 +51,29 @@ Moor needs **Displays have separate Spaces** turned on in System Settings > Desk
 
 ### Update
 
-Run `git pull` in the `moor-dock` folder, then repeat steps 1 and 2. Each build counts as a new app for macOS, so if Moor asks for access again, remove its old entry from the Accessibility list and add it again.
+Choose **Quit Moor** from the menu, then download the [latest release](https://github.com/rooonny/moor-dock/releases/latest) and replace the app in Applications. macOS treats each version as a new app, so if Moor asks for access again, remove its old entry from the Accessibility list and add it again.
 
 ### Uninstall
 
-Choose **Quit Moor** from the menu, delete `/Applications/Moor.app`, and remove Moor from the Accessibility list.
+Choose **Quit Moor** from the menu, delete Moor from Applications, and remove it from the Accessibility list.
+
+### Build from source
+
+If you'd rather build it yourself, you'll need Xcode Command Line Tools (`xcode-select --install`). You don't need the full Xcode app.
+
+```sh
+git clone https://github.com/rooonny/moor-dock.git
+cd moor-dock
+./scripts/build-app.sh
+cp -R build/Moor.app /Applications/
+open /Applications/Moor.app
+```
+
+Then continue from step 3 above.
 
 ## Tested on
 
-A 2560x1440 monitor above a MacBook, with the Dock at the bottom, on macOS 27.2. Other layouts should work but haven't been tried yet, so reports are welcome.
+A 2560x1440 monitor above a MacBook, with the Dock at the bottom, on macOS 27.2. Other layouts should work but haven't been tried yet, and neither have Intel Macs, so reports are welcome.
 
 ## Known limitations
 
@@ -84,7 +89,7 @@ swift test
 
 The display geometry lives in `Sources/DockGeometry` and has no system dependencies, so it can be tested without any monitors attached.
 
-To regenerate the app icon, run `swift scripts/make-icon.swift`.
+To regenerate the app icon, run `swift scripts/make-icon.swift`. To build the zip for a release, run `./scripts/build-release.sh`.
 
 ## Similar projects
 
