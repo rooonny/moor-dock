@@ -25,7 +25,9 @@ You'll need macOS 13 or later.
 
 **1. Download Moor**
 
-[Download Moor.zip](https://github.com/rooonny/moor-dock/releases/latest/download/Moor.zip), unzip it, and drag **Moor** to your Applications folder.
+[Download Moor.dmg](https://github.com/rooonny/moor-dock/releases/latest/download/Moor.dmg), open it, and drag **Moor** onto the **Applications** folder in the window that appears. Then eject the Moor disk.
+
+If macOS won't let you copy it because your account isn't an administrator, use the Applications folder in your home folder instead. In Finder, choose Go > Home, open or create a folder named **Applications**, and drag Moor there.
 
 **2. Open it for the first time**
 
@@ -89,7 +91,7 @@ swift test
 
 The display geometry lives in `Sources/DockGeometry` and has no system dependencies, so it can be tested without any monitors attached.
 
-To regenerate the app icon, run `swift scripts/make-icon.swift`. To build the zip for a release, run `./scripts/build-release.sh`.
+To regenerate the app icon, run `swift scripts/make-icon.swift`, and for the disk image background, `swift scripts/make-dmg-background.swift`. To build the disk image and zip for a release, run `./scripts/build-release.sh`.
 
 ## Similar projects
 
