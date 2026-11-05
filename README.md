@@ -53,7 +53,7 @@ Moor needs **Displays have separate Spaces** turned on in System Settings > Desk
 
 ### Update
 
-Choose **Quit Moor** from the menu, then download the [latest release](https://github.com/rooonny/moor-dock/releases/latest) and replace the app in Applications. macOS treats each version as a new app, so if Moor asks for access again, remove its old entry from the Accessibility list and add it again.
+Choose **Quit Moor** from the menu, then download the [latest release](https://github.com/rooonny/moor-dock/releases/latest) and replace the app in Applications. macOS treats each version as a new app, so remove Moor from the Accessibility list and add it again. The switch can look on while still belonging to the old version.
 
 ### Uninstall
 
