@@ -1,6 +1,6 @@
 #!/bin/sh
 # Builds Moor.dmg and Moor.zip in build/release with a universal (Apple silicon and Intel) app, signed ad-hoc.
-# Arranging the disk image window uses Finder, so macOS may ask to allow automation the first time.
+# Resources/dmg-DS_Store holds the layout of the disk image window, saved from Finder.
 set -eu
 
 cd "$(dirname "$0")/.."
@@ -28,32 +28,8 @@ mkdir -p "$stage/.background"
 cp -R "$app" "$stage/Moor.app"
 ln -s /Applications "$stage/Applications"
 cp Resources/dmg-background.tiff "$stage/.background/background.tiff"
-hdiutil create -quiet -ov -volname Moor -srcfolder "$stage" -fs HFS+ -format UDRW "$out/Moor-rw.dmg"
-
-device="$(hdiutil attach -readwrite -noverify -noautoopen "$out/Moor-rw.dmg" | awk 'NR==1 {print $1}')"
-osascript <<'SCRIPT'
-tell application "Finder"
-    tell disk "Moor"
-        open
-        set current view of container window to icon view
-        set toolbar visible of container window to false
-        set statusbar visible of container window to false
-        set bounds of container window to {200, 120, 840, 520}
-        set options to the icon view options of container window
-        set arrangement of options to not arranged
-        set icon size of options to 96
-        set background picture of options to file ".background:background.tiff"
-        set position of item "Moor.app" of container window to {170, 190}
-        set position of item "Applications" of container window to {470, 190}
-        update without registering applications
-        delay 1
-        close
-    end tell
-end tell
-SCRIPT
-sync
-hdiutil detach -quiet "$device"
-hdiutil convert -quiet "$out/Moor-rw.dmg" -format UDZO -o "$out/Moor.dmg"
-rm -rf "$stage" "$out/Moor-rw.dmg"
+cp Resources/dmg-DS_Store "$stage/.DS_Store"
+hdiutil create -quiet -ov -volname Moor -srcfolder "$stage" -fs HFS+ -format UDZO "$out/Moor.dmg"
+rm -rf "$stage"
 
 echo "Built $out/Moor.dmg and $out/Moor.zip"

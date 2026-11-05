@@ -92,11 +92,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     @objc private func toggleLock() {
-        controller.isEnabled.toggle()
+        controller.setEnabled(!controller.isEnabled)
     }
 
     @objc private func selectDisplay(_ sender: NSMenuItem) {
-        controller.targetUUID = sender.representedObject as? String
+        guard let uuid = sender.representedObject as? String else { return }
+        controller.selectTarget(uuid: uuid)
     }
 
     @objc private func moveNow() {

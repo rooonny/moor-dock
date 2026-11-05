@@ -1,6 +1,5 @@
-import CoreGraphics
+import AppKit
 import DockGeometry
-import Foundation
 
 /// Moves the Dock by pressing the cursor against the target display's edge, then putting it back.
 enum DockMover {
@@ -10,9 +9,13 @@ enum DockMover {
         case failed(edgeWasCovered: Bool)
     }
 
+    private static let maxAttempts = 3
+    private static let pauseBetweenAttempts: TimeInterval = 1
     private static let approachDistance: CGFloat = 40
-    private static let pressAttempts = 60
+    private static let pressSteps = 60
     private static let stepDelay: TimeInterval = 0.02
+    /// The Dock can finish sliding in after the cursor has gone.
+    private static let settleDelay: TimeInterval = 0.6
 
     /// Runs off the main thread so the event tap keeps responding. `isOnTarget` is called on the main thread.
     static func move(
@@ -27,40 +30,56 @@ enum DockMover {
             displays: displays.map(\.bounds),
             edge: edge
         )
+        log.notice("Moving Dock to \(target.name): edge \(edge.rawValue), push point \(push.point.x),\(push.point.y), exposed \(push.isExposed)")
 
         DispatchQueue.global(qos: .userInitiated).async {
-            let original = CGEvent(source: nil)?.location
-            let source = CGEventSource(stateID: .hidSystemState)
-            source?.localEventsSuppressionInterval = 0
-            CGAssociateMouseAndMouseCursorPosition(0)
-
-            press(toward: push.point, edge: edge, source: source)
-
             var moved = false
-            for attempt in 0..<pressAttempts {
-                post(at: push.point, edge: edge, source: source)
-                Thread.sleep(forTimeInterval: stepDelay)
-                if attempt % 10 == 9, DispatchQueue.main.sync(execute: isOnTarget) {
-                    moved = true
-                    break
+            for attempt in 1...maxAttempts where !moved {
+                if attempt > 1 {
+                    Thread.sleep(forTimeInterval: pauseBetweenAttempts)
+                    // Don't take the cursor away in the middle of a drag.
+                    while NSEvent.pressedMouseButtons != 0 {
+                        Thread.sleep(forTimeInterval: 0.2)
+                    }
                 }
+                moved = press(at: push.point, edge: edge, isOnTarget: isOnTarget)
+                log.notice("Attempt \(attempt) of \(maxAttempts): \(moved ? "moved" : "no change")")
             }
-
-            if let original {
-                CGWarpMouseCursorPosition(original)
-            }
-            CGAssociateMouseAndMouseCursorPosition(1)
-
-            // The Dock can finish sliding in after the cursor has gone.
-            Thread.sleep(forTimeInterval: 0.6)
-            let settled = moved || DispatchQueue.main.sync(execute: isOnTarget)
             DispatchQueue.main.async {
-                completion(settled ? .moved : .failed(edgeWasCovered: !push.isExposed))
+                completion(moved ? .moved : .failed(edgeWasCovered: !push.isExposed))
             }
         }
     }
 
-    private static func press(toward point: CGPoint, edge: DockEdge, source: CGEventSource?) {
+    private static func press(at point: CGPoint, edge: DockEdge, isOnTarget: @escaping () -> Bool) -> Bool {
+        let original = CGEvent(source: nil)?.location
+        let source = CGEventSource(stateID: .hidSystemState)
+        source?.localEventsSuppressionInterval = 0
+        CGAssociateMouseAndMouseCursorPosition(0)
+
+        approach(point, edge: edge, source: source)
+
+        var moved = false
+        for step in 0..<pressSteps {
+            post(at: point, edge: edge, source: source)
+            Thread.sleep(forTimeInterval: stepDelay)
+            if step % 10 == 9, DispatchQueue.main.sync(execute: isOnTarget) {
+                moved = true
+                break
+            }
+        }
+
+        if let original {
+            CGWarpMouseCursorPosition(original)
+        }
+        CGAssociateMouseAndMouseCursorPosition(1)
+
+        if moved { return true }
+        Thread.sleep(forTimeInterval: settleDelay)
+        return DispatchQueue.main.sync(execute: isOnTarget)
+    }
+
+    private static func approach(_ point: CGPoint, edge: DockEdge, source: CGEventSource?) {
         let inward = inwardUnit(edge)
         var distance = approachDistance
         while distance > 0 {

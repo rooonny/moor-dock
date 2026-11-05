@@ -11,6 +11,15 @@ struct Display: Equatable {
     let frame: CGRect
     let visibleFrame: CGRect
 
+    var identity: DisplayIdentity {
+        DisplayIdentity(
+            uuid: uuid,
+            vendor: CGDisplayVendorNumber(id),
+            model: CGDisplayModelNumber(id),
+            serial: CGDisplaySerialNumber(id)
+        )
+    }
+
     static func current() -> [Display] {
         NSScreen.screens.compactMap { screen in
             let key = NSDeviceDescriptionKey("NSScreenNumber")

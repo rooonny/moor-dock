@@ -17,7 +17,7 @@ It is built with stacked setups in mind, such as a large monitor above a laptop.
 macOS moves the Dock to a display when the cursor presses against that display's Dock edge. Moor uses this in two ways:
 
 - **Blocking.** An event tap holds the cursor a few points away from the Dock edge on every other display, so the Dock has no reason to leave. Edges shared with another display are not blocked, so you can still move between screens.
-- **Moving.** When the Dock is on the wrong display, the app briefly presses the cursor against the longest free part of the chosen display's edge, then puts the cursor back. If that fails, it waits for a layout change or a click on **Move Dock Now** rather than grabbing the cursor again.
+- **Moving.** When the Dock is on the wrong display, the app briefly presses the cursor against the longest free part of the chosen display's edge, then puts the cursor back. It tries up to three times, and if that fails, it waits for a layout change or a click on **Move Dock Now** rather than grabbing the cursor again.
 
 ## Install
 
@@ -82,6 +82,16 @@ A 2560x1440 monitor above a MacBook, with the Dock at the bottom, on macOS 27.2.
 - The last few points at the Dock edge of other displays can't be reached, which affects hot corners and anything else placed there.
 - If another display covers the chosen display's whole edge, there may be nothing for the cursor to press against. Moving one display sideways in System Settings > Displays > Arrange leaves a free stretch.
 - With an auto-hidden Dock the app asks the Dock for its position, which is less reliable on stacked displays.
+
+## Troubleshooting
+
+If the Dock doesn't move or Moor shows an error, its log usually says why. To see the most recent entries:
+
+```sh
+tail -n 50 ~/Library/Logs/Moor.log
+```
+
+The log contains display names but no personal data, so it's safe to paste into an issue.
 
 ## Development
 

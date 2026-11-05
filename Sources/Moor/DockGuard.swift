@@ -53,6 +53,7 @@ final class DockGuard {
 
     private func handle(type: CGEventType, event: CGEvent) -> Unmanaged<CGEvent>? {
         if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
+            log.notice("Event tap was disabled by the system, turning it back on")
             if let tap {
                 CGEvent.tapEnable(tap: tap, enable: true)
             }
